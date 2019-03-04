@@ -9,6 +9,7 @@ using MathProgBase
 using QuantEcon
 using Combinatorics
 using Parameters
+using Distributions
 
 # Geometry packages
 using Polyhedra
@@ -65,6 +66,8 @@ include("random.jl")
 include("support_enumeration.jl")
 include("generators/Generators.jl")
 
+include("fictplay.jl")
+
 export
     # Types
     Player, NormalFormGame,
@@ -97,6 +100,11 @@ export
     random_pure_actions, random_mixed_actions,
 
     # Support Enumeration
-    support_enumeration, support_enumeration_task
+    support_enumeration, support_enumeration_task,
+
+    # Learning algorithms
+    play!, play, time_series,
+    DecreasingGain, ConstantGain,
+    AbstractFictitiousPlay, FictitiousPlay, StochasticFictitiousPlay
 
 end # module
