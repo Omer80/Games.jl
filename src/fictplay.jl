@@ -115,6 +115,13 @@ function play(fp::AbstractFictitiousPlay{N},
     play!(fp, mixed_actions, options, num_reps=num_reps, t_init=t_init)
 end
 
+function play(fp::AbstractFictitiousPlay{N},
+              options::BROptions=BROptions();
+              num_reps::Integer=1, t_init::Integer=1) where {N}
+    play!(fp, random_mixed_actions(fp.nums_actions), options,
+          num_reps=num_reps, t_init=t_init)
+end
+
 function time_series!(fp::AbstractFictitiousPlay{N},
                       out::NTuple{N,Matrix{<:Real}},
                       options::BROptions=BROptions();
@@ -161,4 +168,12 @@ for (ex_TAS, ex_where, ex_T) in (
         end
         time_series!(fp, out, options, t_init=t_init)
     end
+end
+
+function time_series(fp::AbstractFictitiousPlay{N},
+                     ts_length::Integer,
+                     options::BROptions=BROptions();
+                     t_init::Integer=1) where {N}
+    time_series(fp, ts_length, random_mixed_actions(fp.nums_actions), options,
+                t_init=t_init)
 end
