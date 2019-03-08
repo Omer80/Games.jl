@@ -3,11 +3,11 @@ abstract type AbstractGain end
 struct DecreasingGain <: AbstractGain end
 
 mutable struct ConstantGain{T<:Real} <: AbstractGain
-    epsilon::T
+    size::T
 end
 
 step_size(T::Type, gain::DecreasingGain, t::Integer) = one(T)/(t+1)
-step_size(T::Type, gain::ConstantGain, t::Integer) = T(gain.epsilon)
+step_size(T::Type, gain::ConstantGain, t::Integer) = T(gain.size)
 
 
 abstract type AbstractFictitiousPlay{N,T<:Real} end
