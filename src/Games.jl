@@ -67,6 +67,7 @@ include("support_enumeration.jl")
 include("generators/Generators.jl")
 
 include("fictplay.jl")
+include("localint.jl")
 
 export
     # Types
@@ -102,9 +103,13 @@ export
     # Support Enumeration
     support_enumeration, support_enumeration_task,
 
-    # Learning algorithms
+    # Learning algorithm
     play!, play, time_series,
     DecreasingGain, ConstantGain,
     AbstractFictitiousPlay, FictitiousPlay, StochasticFictitiousPlay
+
+    # Local interaction
+    play!, play, time_series,
+    LocalInteraction
 
 end # module
