@@ -109,7 +109,6 @@ export
     AbstractFictitiousPlay, FictitiousPlay, StochasticFictitiousPlay
 
     # Local interaction
-    play!, play, time_series,
-    LocalInteraction
+    LocalInteraction, play, time_series
 
 end # module
