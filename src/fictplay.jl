@@ -28,7 +28,7 @@ struct DecreasingGain <: AbstractGain end
 Type representing the gain constant over time. Subtype of `AbstractGain`.
 """
 
-mutable struct ConstantGain{T<:Real} <: AbstractGain
+struct ConstantGain{T<:Real} <: AbstractGain
     size::T
 end
 
@@ -85,7 +85,7 @@ Subtype of `AbstractFictitiousPlay`.
 # Fields
 
 - `players::NTuple{N,Player{N,T}}` : Tuple of player instances.
-- `nums_actions::NTuple{N,Int}` : Tuple of integers which are the number of 
+- `nums_actions::NTuple{N,Int}` : Tuple of integers which are the number of
   actions for each player.
 - `gain::TG` : Type of gain.
 - `d::TD` Distribution of the payoff shocks.
@@ -301,7 +301,7 @@ end
 """
   time_series!(fp, out, options, t_init)
 
-Update the `out` which 
+Update the `out` which
 
 # Arguments
 
@@ -379,7 +379,7 @@ Return time series of normalized action histories.
 - `options::BROptions` : Options for `best_response` method.
 - `t_init::Integer` : The period iteration starts.
 
-# Returns 
+# Returns
 
 - `::NTuple{N,Matrix{<:Real}}` : Time series of normalized action history.
 """
@@ -397,7 +397,7 @@ Return time series of normalized action histories.
 - `options::BROptions` : Options for `best_response` method.
 - `t_init::Integer` : The period iteration starts.
 
-# Returns 
+# Returns
 
 - `::NTuple{N,Matrix{<:Real}}` : Time series of normalized action history.
 """
