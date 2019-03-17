@@ -82,9 +82,8 @@ Construct a `FictitiousPlay` instance.
 - `::FictitiousPlay`
 """
 
-FictitiousPlay(g::NormalFormGame, gain::AbstractGain) =
+FictitiousPlay(g::NormalFormGame, gain::AbstractGain=DecreasingGain()) =
     FictitiousPlay(g.players, g.nums_actions, gain)
-FictitiousPlay(g::NormalFormGame) = FictitiousPlay(g, DecreasingGain())
 
 """
     FictitiousPlay(fp[, gain])
@@ -100,10 +99,8 @@ Construct a new `FictitiousPlay` instance from `fp`.
 
 - `::FictitiousPlay`
 """
-FictitiousPlay(fp::AbstractFictitiousPlay, gain::AbstractGain) =
+FictitiousPlay(fp::AbstractFictitiousPlay, gain::AbstractGain=fp.gain) =
     FictitiousPlay(fp.players, fp.nums_actions, gain)
-FictitiousPlay(fp::AbstractFictitiousPlay) =
-    FictitiousPlay(fp.players, fp.nums_actions, fp.gain)
 
 """
   StochasticFictitiousPlay{N, T, TG, TD}
@@ -120,61 +117,56 @@ Subtype of `AbstractFictitiousPlay`.
 - `d::TD` Distribution of the payoff shocks.
 """
 
-struct StochasticFictitiousPlay{N,T<:Real,TG<:AbstractGain,
-                                TD<:Distribution} <: AbstractFictitiousPlay{N,T}
+struct StochasticFictitiousPlay{N,T<:Real,TD<:Distribution,
+                                TG<:AbstractGain} <: AbstractFictitiousPlay{N,T}
     players::NTuple{N,Player{N,T}}
     nums_actions::NTuple{N,Int}
-    gain::TG
     d::TD
+    gain::TG
 end
 
 """
-    StochasticFictitiousPlay(g[, gain], d)
+    StochasticFictitiousPlay(g, d[, gain])
 
 Construct a `StochasticFictitiousPlay` instance.
 
 # Arguments
 
 - `g::NormalFormGame` : `NormalFormGame` instance.
-- `gain::AbstractGain` : Argument to specify the gain or step size;
-  `DecreasingGain()` (default) or `ConstantGain(size)`.
 - `d::Distributions.Distribution` : `Distribution` instance from which payoff
   perturbations are drawn.
+- `gain::AbstractGain` : Argument to specify the gain or step size;
+  `DecreasingGain()` (default) or `ConstantGain(size)`.
 
 # Returns
 
 - `::StochasticFictitiousPlay`
 """
-StochasticFictitiousPlay(g::NormalFormGame, gain::AbstractGain,
-                         d::Distribution) =
-    StochasticFictitiousPlay(g.players, g.nums_actions, gain, d)
-StochasticFictitiousPlay(g::NormalFormGame, d::Distribution) =
-    StochasticFictitiousPlay(g, DecreasingGain(), d)
+StochasticFictitiousPlay(g::NormalFormGame, d::Distribution,
+                         gain::AbstractGain=DecreasingGain()) =
+    StochasticFictitiousPlay(g.players, g.nums_actions, d, gain)
 
 """
-    StochasticFictitiousPlay(fp[, gain, d])
+    StochasticFictitiousPlay(fp[, d, gain])
 
 Construct a new `StochasticFictitiousPlay` instance from `fp`.
 
 # Arguments
 
 - `g::AbstractFictitiousPlay`
-- `gain::AbstractGain`
 - `d::Distributions.Distribution`
+- `gain::AbstractGain`
 
 # Returns
 
 - `::StochasticFictitiousPlay`
 """
-StochasticFictitiousPlay(fp::AbstractFictitiousPlay, gain::AbstractGain,
-                         d::Distribution) =
-    StochasticFictitiousPlay(fp.players, fp.nums_actions, gain, d)
-StochasticFictitiousPlay(fp::AbstractFictitiousPlay, d::Distribution) =
-    StochasticFictitiousPlay(fp.players, fp.nums_actions, fp.gain, d)
-StochasticFictitiousPlay(fp::StochasticFictitiousPlay, gain::AbstractGain) =
-    StochasticFictitiousPlay(fp.players, fp.nums_actions, gain, fp.d)
-StochasticFictitiousPlay(fp::StochasticFictitiousPlay) =
-    StochasticFictitiousPlay(fp.players, fp.nums_actions, fp.gain, fp.d)
+StochasticFictitiousPlay(fp::AbstractFictitiousPlay, d::Distribution,
+                         gain::AbstractGain=fp.gain) =
+    StochasticFictitiousPlay(fp.players, fp.nums_actions, d, gain)
+StochasticFictitiousPlay(fp::StochasticFictitiousPlay,
+                         gain::AbstractGain=fp.gain) =
+    StochasticFictitiousPlay(fp.players, fp.nums_actions, fp.d, gain)
 
 
 # play!
