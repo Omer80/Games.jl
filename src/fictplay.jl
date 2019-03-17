@@ -64,16 +64,10 @@ struct FictitiousPlay{N,T<:Real,TG<:AbstractGain} <: AbstractFictitiousPlay{N,T}
     players::NTuple{N,Player{N,T}}
     nums_actions::NTuple{N,Int}
     gain::TG
-
-    function FictitiousPlay{N,T,TG}(g::NormalFormGame{N,T},
-                                    gain::TG) where {N,T<:Real,TG<:AbstractGain}
-        return new(g.players, g.nums_actions, gain)
-    end
 end
 
-FictitiousPlay(g::NormalFormGame{N,T},
-               gain::TG) where {N,T<:Real,TG<:AbstractGain} =
-    FictitiousPlay{N,T,TG}(g, gain)
+FictitiousPlay(g::NormalFormGame, gain::AbstractGain) =
+    FictitiousPlay(g.players, g.nums_actions, gain)
 FictitiousPlay(g::NormalFormGame) = FictitiousPlay(g, DecreasingGain())
 
 """
@@ -97,18 +91,11 @@ struct StochasticFictitiousPlay{N,T<:Real,TG<:AbstractGain,
     nums_actions::NTuple{N,Int}
     gain::TG
     d::TD
-
-    function StochasticFictitiousPlay{N,T,TG,TD}(
-        g::NormalFormGame{N,T}, gain::TG, d::TD
-    ) where {N,T<:Real,TG<:AbstractGain,TD<:Distribution}
-        return new(g.players, g.nums_actions, gain, d)
-    end
 end
 
-StochasticFictitiousPlay(
-    g::NormalFormGame{N,T}, gain::TG, d::TD
-) where {N,T<:Real,TG<:AbstractGain,TD<:Distribution} =
-    StochasticFictitiousPlay{N,T,TG,TD}(g, gain, d)
+StochasticFictitiousPlay(g::NormalFormGame, gain::AbstractGain,
+                         d::Distribution) =
+    StochasticFictitiousPlay(g.players, g.nums_actions, gain, d)
 StochasticFictitiousPlay(g::NormalFormGame, d::Distribution) =
     StochasticFictitiousPlay(g, DecreasingGain(), d)
 
