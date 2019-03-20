@@ -25,14 +25,32 @@ struct LocalInteraction{N,T<:Real,S<:Real}
     players::NTuple{N,Player{2,T}}
     num_actions::Int
     adj_matrix::SparseMatrixCSC{S,<:Integer}
+end
 
-    function LocalInteraction(g::NormalFormGame{2,T},
-                              adj_matrix::Matrix{S}) where {T<:Real,S<:Real}
-        N = size(adj_matrix, 1)
-        players = ntuple(i -> g.players[1], N)
-        sparse_adj = sparse(adj_matrix)
-        return new{N,T,S}(players, g.nums_actions[1], sparse_adj)
+function LocalInteraction(g::NormalFormGame{2,T},
+                          adj_matrix::Matrix{S}) where {T<:Real,S<:Real}
+    if size(adj_matrix, 1) != size(adj_matrix, 2)
+        throw(ArgumentError("Adjacency matrix must be square"))
     end
+    N = size(adj_matrix, 1)
+    players = ntuple(i -> g.players[1], N)
+    sparse_adj = sparse(adj_matrix)
+    return LocalInteraction{N,T,S}(players, g.nums_actions[1], sparse_adj)
+end
+
+function LocalInteraction(payoff_matrix::Matrix{T},
+                          adj_matrix::Matrix{S}) where {T<:Real,S<:Real}
+    if size(adj_matrix, 1) != size(adj_matrix, 2)
+        throw(ArgumentError("Adjacency matrix must be square"))
+    end
+    N = size(adj_matrix, 1)
+    players = ntuple(i -> Player(payoff_matrix), N)
+    if size(payoff_matrix, 1) != size(payoff_matrix, 2)
+        throw(ArgumentError("Payoff matrix must be square"))
+    end
+    num_actions = size(payoff_matrix, 1)
+    sparse_adj = sparse(adj_matrix)
+    return LocalInteraction{N,T,S}(players, num_actions, sparse_adj)
 end
 
 
@@ -81,12 +99,12 @@ end
 play!(li::LocalInteraction, actions::Vector{<:Integer}, options::BROptions, 
     player_ind::Int) = play!(li, actions, options, [player_ind])
 
-play!(li::LocalInteraction{N}, actions::Vector{<:Integer}, options::BROptions) where {N} =
-    play!(li, actions, options, [1:N...])
+play!(li::LocalInteraction{N}, actions::Vector{<:Integer},
+      options::BROptions) where {N} = play!(li, actions, options, [1:N...])
 
 """
 
-    play!(li, actions, options, player_ind, num_reps)
+    play!(li, actions, options, player_ind[, num_reps])
 
 Update actions of each players `num_reps` times.
 
@@ -120,7 +138,7 @@ end
 
 """
 
-    play(li, actions, player_ind, num_reps, options)
+    play(li, actions, player_ind[, options, num_reps])
 
 Return the actions of each players after `num_reps` times iteration.
 
@@ -161,7 +179,7 @@ end
 
 """
 
-    time_series!(li, out, options, player_ind)
+    time_series!(li, out, options, player_ind_seq)
 
 Update `out` which is time series of actions.
 
@@ -170,8 +188,8 @@ Update `out` which is time series of actions.
 - `li::LocalInteraction{N}` : Local interaction instance.
 - `out::Matrix{Int}` : Matrix representing time series of actions of each players.
 - `options::BROptions` : Options for `best_response` method.
-- `player_ind::Union{Vector{Int},Integer}` : Integer or vector of integers
-    representing the index of players to take an action.
+- `player_ind_seq::Vector{<:Any}` : Vector representing the index of players
+   to take an action.
 
 # Returns
 
@@ -184,7 +202,8 @@ function time_series!(li::LocalInteraction{N},
                       player_ind_seq::Vector{<:Any}) where N
     ts_length = size(out, 2)
     if ts_length != length(player_ind_seq) + 1
-        throw(ArgumentError("The length of `ts_length` and `player_ind_seq` are mismatched"))
+        throw(ArgumentError("The length of `ts_length` and
+                             `player_ind_seq` are mismatched"))
     end
 
     actions = [out[i,1] for i in 1:N]
@@ -214,7 +233,7 @@ end
 
 """
 
-    time_series(li, ts_length, init_actions, player_ind, options)
+    time_series(li, ts_length, init_actions, player_ind[, options])
 
 Return the time series of actions.
 
