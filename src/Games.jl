@@ -68,6 +68,7 @@ include("generators/Generators.jl")
 
 include("fictplay.jl")
 include("localint.jl")
+include("brd.jl")
 
 export
     # Types
@@ -110,5 +111,8 @@ export
 
     # Local interaction
     LocalInteraction, play, time_series
+
+    # Best response dynamics
+    AbstractBRD, BRD, KMR, SamplingBRD, time_series
 
 end # module
