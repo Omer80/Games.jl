@@ -225,14 +225,15 @@ Update `actions` which represents the normalized action history for each player.
 - `actions::MixedActionProfile` : Updated `actions`.
 """
 
-function play!(fp::StochasticFictitiousPlay{N},
+function play!(rng::AbstractRNG,
+               fp::StochasticFictitiousPlay{N},
                actions::MixedActionProfile{TA,N},
                options::BROptions,
                brs::Vector{Int}, t::Integer) where {N,TA<:Real}
     for i in 1:N
         opponents_actions =
             tuple(actions[i+1:end]..., actions[1:i-1]...)
-        perturbations = rand(fp.d, fp.nums_actions[i])
+        perturbations = rand(rng, fp.d, fp.nums_actions[i])
         brs[i] = best_response(fp.players[i], opponents_actions, perturbations)
     end
 
@@ -243,6 +244,10 @@ function play!(fp::StochasticFictitiousPlay{N},
 
     return actions
 end
+
+play!(fp::StochasticFictitiousPlay{N}, actions::MixedActionProfile{TA,N},
+      options::BROptions, brs::Vector{Int}, t::Integer) where {N,TA<:Real} =
+    play!(Random.GLOBAL_RNG, fp, actions, options, brs, t)
 
 """
   play!(fp, actions, options, num_reps, t_init)
