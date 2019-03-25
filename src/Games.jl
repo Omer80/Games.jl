@@ -110,6 +110,7 @@ export
     AbstractFictitiousPlay, FictitiousPlay, StochasticFictitiousPlay
 
     # Local interaction
+    SimultaneousRevision, SequencialRevision,
     LocalInteraction, play, time_series
 
     # Best response dynamics
