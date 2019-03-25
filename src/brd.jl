@@ -24,7 +24,7 @@ Type representing the best response dynamics model. Subtype of `AbstractBRD`.
 
 - `N::Int` : The number of players.
 - `player::Player{2,T}` : Player instance in the model.
-- ` num_actions::Int` : The number of actions for each player.
+- `num_actions::Int` : The number of actions for each player.
 """
 struct BRD{T<:Real} <: AbstractBRD{T}
     N::Int
@@ -46,8 +46,13 @@ Create a new BRD instance.
 
 - `::BRD`
 """
-BRD(N::Integer, payoff_array::Matrix{T}) where {T<:Real} =
-    BRD(N, Player(payoff_array), size(payoff_array, 1))
+function BRD(N::Integer, payoff_array::Matrix{T}) where {T<:Real}
+    num_actions = size(payoff_array, 1)
+    if num_actions != size(payoff_array, 2)
+        throw(ArgumentError("Payoff array must be square"))
+    end
+    return BRD(N, Player(payoff_array), num_actions)
+end
 
 """
     KMR
@@ -83,9 +88,15 @@ Create a new KMR instance.
 
 - `::KMR`
 """
-KMR(N::Integer, payoff_array::Matrix{T},
-    epsilon::Float64) where {T<:Real} =
-    KMR(N, Player(payoff_array), size(payoff_array, 1), epsilon)
+function KMR(N::Integer,
+             payoff_array::Matrix{T},
+             epsilon::Float64) where {T<:Real}
+    num_actions = size(payoff_array, 1)
+    if num_actions != size(payoff_array, 2)
+        throw(ArgumentError("Payoff array must be square"))
+    end
+    return BRD(N, Player(payoff_array), num_actions, epsilon)
+end
 
 """
     SamplingBRD
@@ -122,9 +133,15 @@ Create a new SamplingBRD instance.
 
 - `::SamplingBRD`
 """
-SamplingBRD(N::Integer, payoff_array::Matrix{T}, k::Integer) where {T<:Real} =
-    SamplingBRD(N, Player(payoff_array), size(payoff_array, 1), k)
-
+function SamplingBRD(N::Integer,
+                     payoff_array::Matrix{T},
+                     k::Integer) where {T<:Real}
+    num_actions = size(payoff_array, 1)
+    if num_actions != size(payoff_array, 2)
+        throw(ArgumentError("Payoff array must be square"))
+    end
+    return BRD(N, Player(payoff_array), num_actions, k)
+end
 
 # play!
 
