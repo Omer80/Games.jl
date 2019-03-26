@@ -278,8 +278,7 @@ function time_series!(rng::AbstractRNG,
     ts_length = size(out, 1)
     action_dist = [out[i,1] for i in 1:brd.num_actions]
     for t in 1:ts_length
-        action = searchsortedlast(accumulate(+, action_dist), player_ind_seq[t])
-        action = action != brd.num_actions ? action+1 : action-1
+        action = searchsortedfirst(accumulate(+, action_dist), player_ind_seq[t])
         action_dist = play!(rng, brd, action, action_dist, options)
         for i in 1:brd.num_actions
             out[i,t+1] = action_dist[i]
