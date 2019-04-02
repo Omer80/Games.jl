@@ -210,7 +210,7 @@ Update actions of each players `num_reps` times.
 function play!(li::LocalInteraction,
                actions::Vector{<:Integer},
                options::BROptions,
-               player_ind::Union{Vector{<:Integer},Integer},
+               player_ind::Union{AbstractVector{<:Integer},Integer},
                num_reps::Integer=1)
     for t in 1:num_reps
         play!(li, actions, player_ind, options)
