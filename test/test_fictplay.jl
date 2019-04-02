@@ -6,9 +6,8 @@
 #       that multiple times for the same function if we have particular reason
 #       to believe there might be a type stability with that function.
 
-using Distribution
 
-include("fictplay.jl")
+using Distribution
 
 
 @testset "Testing fictplay.jl" begin
