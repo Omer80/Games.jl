@@ -7,7 +7,7 @@
 #       to believe there might be a type stability with that function.
 
 
-using Distribution
+using Distributions
 
 
 @testset "Testing fictplay.jl" begin
